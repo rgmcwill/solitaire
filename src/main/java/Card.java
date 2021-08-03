@@ -47,6 +47,14 @@ public class Card
             faceDown = true;
     }
 
+    public void setFaceDown() {
+        faceDown = false;
+    }
+
+    public void setFaceUp() {
+        faceDown = false;
+    }
+
     public boolean equals( Card x ) {
         if ( this.cardSuit == x.cardSuit && this.cardRank == x.cardRank )
             return ( true );

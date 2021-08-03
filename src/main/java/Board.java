@@ -1,14 +1,14 @@
 import java.util.Stack;
 
 public class Board {
-    private Stack<Card>[] mainBoard;
-    private Stack<Card>[] aceBoard;
+    private ColOfCards[] mainBoard;
+    private AceStacksOfCards[] aceBoard;
     private DeckOfCards deck;
 
     public Board(DeckOfCards deck) {
         this.deck = deck;
-        mainBoard = new Stack[7];
-        aceBoard = new Stack[4];
+        mainBoard = new ColOfCards[7];
+        aceBoard = new AceStacksOfCards[4];
 
         int i = 0;
         int j = 0;
@@ -18,14 +18,33 @@ public class Board {
                 j++;
             }
             if (mainBoard[i] == null) {
-                mainBoard[i] = new Stack<>();
+                mainBoard[i] = new ColOfCards();
             }
             if (mainBoard[i].size() < i+1) {
-                mainBoard[i].push(deck.deal());
+                Card card = deck.deal();
+                if (mainBoard[i].size() == i) {
+                    card.flip();
+                }
+                    mainBoard[i].push(card);
             }
             i++;
         }
+    }
 
-        System.out.println(mainBoard[6]);
+    public boolean moveToCol(int to, int from) {
+        boolean didMove = false;
+
+        Card cardToMove = mainBoard[from].pop();
+        mainBoard[to].push(cardToMove);
+
+        mainBoard[from].peek();
+        printBoard();
+        return didMove;
+    }
+
+    public void printBoard() {
+        for (StackOfCards cards : mainBoard) {
+            System.out.println(cards.toString());
+        }
     }
 }
