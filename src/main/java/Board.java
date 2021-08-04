@@ -10,6 +10,7 @@ public class Board {
         this.deck = deck;
         mainBoard = new ColOfCards[7];
         aceBoard = new AceStacksOfCards[4];
+        moveStack = new Stack<>();
 
         int i = 0;
         int j = 0;
@@ -33,7 +34,34 @@ public class Board {
     }
 
     public boolean moveToColAtDepth(int from, int to, int depth) {
-        return false;
+        boolean canMove = false;
+
+        for (int i = 0; i < depth; i++) {
+            Card popped  = mainBoard[from].pop();
+            moveStack.push(popped);
+        }
+        Card cardToMove = moveStack.peek();
+        Card cardMoved = mainBoard[to].pushValidate(cardToMove);
+        if (cardMoved != null) {
+            canMove = true;
+            moveStack.pop();
+            while (moveStack.size() != 0) {
+                mainBoard[to].push(moveStack.pop());
+            }
+        } else {
+            mainBoard[from].peek().flip();
+            for (int i = 0; i < depth; i++) {
+                Card popped  = moveStack.pop();
+                mainBoard[from].push(popped);
+            }
+            System.out.println("You DUMB MOTHERFUCKER..... You cant do that! :)");
+        }
+
+        if (mainBoard[from].size() != 0)
+            mainBoard[from].peek();
+
+        printBoard();
+        return canMove;
     }
 
     public boolean moveToCol(int from, int to) {
