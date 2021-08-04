@@ -19,9 +19,7 @@ public class ColOfCards extends Stack<Card> {
 
     @Override
     public Card peek() {
-        Card card = super.peek();
-        card.setFaceUp();
-        return card;
+        return super.peek();
     }
 
     @Override

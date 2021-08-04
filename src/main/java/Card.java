@@ -6,7 +6,7 @@ public class Card
     public static final int SPADE = 1;
 
     private static final String[] Suit = { "*", "s", "c", "h", "d"};
-    private static final String[] Rank = { "*", "*", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    private static final String[] Rank = { "*", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
     private byte cardSuit;
     private byte cardRank;
@@ -14,10 +14,7 @@ public class Card
     private boolean faceDown;
 
     public Card( int suit, int rank ) {
-        if ( rank == 1 )
-            cardRank = 14;     // Give Ace the rank 14
-        else
-            cardRank = (byte) rank;
+        cardRank = (byte) rank;
 
         if (suit > 0 && suit < 3) {
             isRed = false;
@@ -61,11 +58,15 @@ public class Card
     }
 
     public void setFaceDown() {
-        faceDown = false;
+        faceDown = true;
     }
 
     public void setFaceUp() {
         faceDown = false;
+    }
+
+    public boolean isFaceDown() {
+        return faceDown;
     }
 
     public boolean equals( Card x ) {

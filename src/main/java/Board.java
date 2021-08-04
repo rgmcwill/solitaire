@@ -34,34 +34,44 @@ public class Board {
     }
 
     public boolean moveToColAtDepth(int from, int to, int depth) {
-        boolean canMove = false;
+        ColOfCards fromCol = mainBoard[from];
+        ColOfCards toCol = mainBoard[to];
 
+        //Checks if can even delve that deep into the colstack
+        if (fromCol.size() < depth)
+            return false;
+
+        //Checks if it can move the cards, as in, if they are flipped over and moves them to the move stack
         for (int i = 0; i < depth; i++) {
-            Card popped  = mainBoard[from].pop();
-            moveStack.push(popped);
-        }
-        Card cardToMove = moveStack.peek();
-        Card cardMoved = mainBoard[to].pushValidate(cardToMove);
-        if (cardMoved != null) {
-            canMove = true;
-            moveStack.pop();
-            while (moveStack.size() != 0) {
-                mainBoard[to].push(moveStack.pop());
+            Card poppedCard = fromCol.pop();
+            if (!poppedCard.isFaceDown()) {
+                moveStack.push(poppedCard);
+            } else {
+                fromCol.push(poppedCard);
             }
+        }
+
+        Card movedPoppedCard = moveStack.pop();
+        Card validatedCard = toCol.pushValidate(movedPoppedCard);
+
+        if (validatedCard == null) {
+            fromCol.push(movedPoppedCard);
+            while (!moveStack.empty()) {
+                fromCol.push(moveStack.pop());
+            }
+            printBoard();
+            System.out.println("----------------------------------------------------------------------------------");
+            return false;
         } else {
-            mainBoard[from].peek().flip();
-            for (int i = 0; i < depth; i++) {
-                Card popped  = moveStack.pop();
-                mainBoard[from].push(popped);
+            while (!moveStack.empty()) {
+                toCol.push(moveStack.pop());
             }
-            System.out.println("You DUMB MOTHERFUCKER..... You cant do that! :)");
+            if (!fromCol.empty())
+                fromCol.peek().setFaceUp();
+            printBoard();
+            System.out.println("----------------------------------------------------------------------------------");
+            return true;
         }
-
-        if (mainBoard[from].size() != 0)
-            mainBoard[from].peek();
-
-        printBoard();
-        return canMove;
     }
 
     public boolean moveToCol(int from, int to) {
@@ -87,5 +97,9 @@ public class Board {
         for (ColOfCards cards : mainBoard) {
             System.out.println(cards.toString());
         }
+    }
+
+    public void printTempStack() {
+        System.out.println(moveStack.toString());
     }
 }
