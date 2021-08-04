@@ -4,6 +4,7 @@ public class Board {
     private ColOfCards[] mainBoard;
     private AceStacksOfCards[] aceBoard;
     private DeckOfCards deck;
+    private Stack<Card> moveStack;
 
     public Board(DeckOfCards deck) {
         this.deck = deck;
@@ -31,19 +32,31 @@ public class Board {
         }
     }
 
-    public boolean moveToCol(int to, int from) {
-        boolean didMove = false;
+    public boolean moveToColAtDepth(int from, int to, int depth) {
+        return false;
+    }
 
-        Card cardToMove = mainBoard[from].pop();
-        mainBoard[to].push(cardToMove);
+    public boolean moveToCol(int from, int to) {
+        boolean canMove = false;
 
-        mainBoard[from].peek();
+        Card cardToMove = mainBoard[from].peek();
+        Card cardMoved = mainBoard[to].pushValidate(cardToMove);
+        if (cardMoved != null) {
+            canMove = true;
+            mainBoard[from].pop();
+        } else {
+            System.out.println("You DUMB MOTHERFUCKER..... You cant do that! :)");
+        }
+
+        if (mainBoard[from].size() != 0)
+            mainBoard[from].peek();
+
         printBoard();
-        return didMove;
+        return canMove;
     }
 
     public void printBoard() {
-        for (StackOfCards cards : mainBoard) {
+        for (ColOfCards cards : mainBoard) {
             System.out.println(cards.toString());
         }
     }

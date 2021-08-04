@@ -6,9 +6,15 @@ public class ColOfCards extends Stack<Card> {
         return super.pop();
     }
 
-    @Override
-    public Card push(Card card) {
-        return super.push(card);
+    public Card pushValidate(Card card) {
+        if (super.size() != 0) {
+            Card baseCard = super.peek();
+            if (baseCard.getCardRank() - 1 == card.getCardRank() && baseCard.isRed() != card.isRed())
+                return super.push(card);
+        } else if (card.getCardRank() == 13) {
+            return super.push(card);
+        }
+        return null;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Main {
             Scanner input = new Scanner(System.in);
             String line = input.nextLine();
             String[] splitLine = line.split(" ");
-            board.moveToCol(Integer.valueOf(splitLine[1]),Integer.valueOf(splitLine[0]));
+            board.moveToCol(Integer.valueOf(splitLine[0]), Integer.valueOf(splitLine[1]));
         }
     }
 }
