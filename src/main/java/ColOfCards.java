@@ -1,11 +1,6 @@
 import java.util.Stack;
 
-public class ColOfCards extends Stack<Card> {
-    @Override
-    public Card pop() {
-        return super.pop();
-    }
-
+public class ColOfCards extends Stack<Card> implements StackOfCards {
     public Card pushValidate(Card card) {
         if (super.size() != 0) {
             Card baseCard = super.peek();
@@ -15,15 +10,5 @@ public class ColOfCards extends Stack<Card> {
             return super.push(card);
         }
         return null;
-    }
-
-    @Override
-    public Card peek() {
-        return super.peek();
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
     }
 }

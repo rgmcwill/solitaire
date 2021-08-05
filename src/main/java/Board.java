@@ -33,6 +33,10 @@ public class Board {
         }
     }
 
+    public boolean moveToAceStacks(int from) {
+        return false;
+    }
+
     public boolean moveToColAtDepth(int from, int to, int depth) {
         ColOfCards fromCol = mainBoard[from];
         ColOfCards toCol = mainBoard[to];
