@@ -3,14 +3,26 @@ import java.util.Stack;
 public class Board {
     private ColOfCards[] mainBoard;
     private AceStacksOfCards[] aceBoard;
-    private DeckOfCards deck;
+    private Stack<Card> deck;
+    private Stack<Card> oDeck;
     private Stack<Card> moveStack;
+    private boolean o;
 
     public Board(DeckOfCards deck) {
-        this.deck = deck;
-        mainBoard = new ColOfCards[7];
-        aceBoard = new AceStacksOfCards[4];
-        moveStack = new Stack<>();
+        this.mainBoard = new ColOfCards[7];
+        this.aceBoard = new AceStacksOfCards[4];
+        this.deck = new Stack<>();
+        this.oDeck = new Stack<>();
+        this.moveStack = new Stack<>();
+        this.o = false;
+
+        for (int i = 0; i < 4; i++) {
+            aceBoard[i] = new AceStacksOfCards();
+        }
+
+        while (deck.cardsLeft()) {
+            this.deck.push(deck.deal());
+        }
 
         int i = 0;
         int j = 0;
@@ -23,7 +35,7 @@ public class Board {
                 mainBoard[i] = new ColOfCards();
             }
             if (mainBoard[i].size() < i+1) {
-                Card card = deck.deal();
+                Card card = this.deck.pop();
                 if (mainBoard[i].size() == i) {
                     card.flip();
                 }
@@ -33,8 +45,34 @@ public class Board {
         }
     }
 
-    public boolean moveToAceStacks(int from) {
+    public Card deal() {
+        Card dealt = null;
+        if (!o) {
+            dealt = oDeck.push(deck.pop());
+        } else {
+            dealt = deck.push(oDeck.pop());
+        }
+
+        if (oDeck.size() <= 0) {
+            o = false;
+        } else if (deck.size() <= 0) {
+            o = true;
+        }
+        return dealt;
+    }
+
+    public boolean moveFromDeal(int to) {
         return false;
+    }
+
+    public boolean moveToAceStacks(int from) {
+        Card cardToMove = mainBoard[from].peek();
+        Card movedCard = aceBoard[cardToMove.getCardSuit()-1].pushValidate(cardToMove);
+        if (movedCard == null) {
+            return false;
+        }
+        mainBoard[from].pop();
+        return true;
     }
 
     public boolean moveToColAtDepth(int from, int to, int depth) {
@@ -86,8 +124,6 @@ public class Board {
         if (cardMoved != null) {
             canMove = true;
             mainBoard[from].pop();
-        } else {
-            System.out.println("You DUMB MOTHERFUCKER..... You cant do that! :)");
         }
 
         if (mainBoard[from].size() != 0)
@@ -98,7 +134,19 @@ public class Board {
     }
 
     public void printBoard() {
+        printMainBoard();
+        System.out.println("----------------------------------------------------");
+        printAceBoard();
+    }
+
+    public void printMainBoard() {
         for (ColOfCards cards : mainBoard) {
+            System.out.println(cards.toString());
+        }
+    }
+
+    public void printAceBoard() {
+        for (AceStacksOfCards cards : aceBoard) {
             System.out.println(cards.toString());
         }
     }

@@ -51,7 +51,7 @@ public class DeckOfCards {
       deal(): deal deckOfCards[currentCard] out
       ------------------------------------------- */
     public Card deal() {
-        if ( currentCard < NCARDS )
+        if ( cardsLeft() )
         {
             return ( deckOfCards[ currentCard++ ] );
         }
@@ -60,6 +60,10 @@ public class DeckOfCards {
             System.out.println("Out of cards error");
             return ( null );  // Error;
         }
+    }
+
+    public boolean cardsLeft() {
+        return currentCard < NCARDS;
     }
 
     public void flip() {
