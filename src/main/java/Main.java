@@ -5,7 +5,7 @@ public class Main {
     public static void main(String args[]) {
         DeckOfCards deck = new DeckOfCards();
 
-//        deck.shuffle(520);
+        deck.shuffle(520,0);
 
 //        deck.flip();
 
@@ -32,11 +32,19 @@ public class Main {
             System.out.println(splitLine[0]);
             boolean isGood = false;
             if (splitLine[0].equals("A")) {
-                isGood = board.moveToAceStacks(Integer.valueOf(splitLine[1]));
+                if (splitLine.length == 2) {
+                    isGood = board.moveToAceStacks(Integer.valueOf(splitLine[1]));
+                } else {
+                    isGood = false;
+                }
             } else if (splitLine[0].equals("D")) {
                 board.deal();
             } else if (splitLine[0].equals("B")) {
-                isGood = board.moveFromDeal(Integer.valueOf(splitLine[1]));
+                if (splitLine.length == 2) {
+                    isGood = board.moveFromDeal(Integer.valueOf(splitLine[1]));
+                } else {
+                    isGood = false;
+                }
             } else {
                 if (splitLine.length == 2) {
                     isGood = board.moveToColAtDepth(Integer.valueOf(splitLine[0]), Integer.valueOf(splitLine[1]), 1);
@@ -47,12 +55,10 @@ public class Main {
 
 
             if (isGood) {
-                System.out.println("!!");
+                board.printBoard();
             } else {
-                System.out.println("You are Bad");
+                System.out.println("Bad Move");
             }
-
-            board.printBoard();
         }
     }
 }

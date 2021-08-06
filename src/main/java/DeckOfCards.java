@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class DeckOfCards {
     public static final int NCARDS = 52;
 
@@ -29,7 +31,7 @@ public class DeckOfCards {
     /* ---------------------------------
       shuffle(n): shuffle the deck
       --------------------------------- */
-    public void shuffle(int n) {
+    public void shuffle(int n, int seed) {
         int i, j, k;
 
         for ( k = 0; k < n; k++ )

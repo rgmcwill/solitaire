@@ -55,30 +55,27 @@ public class Board {
         }
     }
 
-    public Card deal() {
-        Card dealt = null;
-        if (bDeck.size() <= 0) {
-            o = false;
-            deck = fDeck;
-            dealtDeck = bDeck;
-        } else if (bDeck.size() <= 0) {
-            o = true;
-            deck = bDeck;
-            dealtDeck = fDeck;
-        }
+    public boolean deal() {
 
-        if (!o) {
-            dealt = bDeck.push(fDeck.pop());
+        if (deck.empty()) {
+            if (dealtDeck.empty()) {
+                return false;
+            }
+            int dealtDeckSize = dealtDeck.size();
+            for (int i = 0; i < dealtDeckSize; i++) {
+                Card cardToPutBack = dealtDeck.pop();
+                cardToPutBack.setFaceDown();
+                deck.push(cardToPutBack);
+            }
         } else {
-            dealt = fDeck.push(bDeck.pop());
+            dealtDeck.push(deck.pop());
+            dealtDeck.peek().setFaceUp();
         }
-
-        dealt.flip();
-        return dealt;
+        return true;
     }
 
     public boolean moveFromDeal(int to) {
-        Card cardToMove = deck.peek();
+        Card cardToMove = dealtDeck.peek();
         Card movedCard = null;
         if (to < 7) {
             movedCard = mainBoard[to].pushValidate(cardToMove);
@@ -86,7 +83,10 @@ public class Board {
             movedCard = aceBoard[cardToMove.getCardSuit()-1].pushValidate(cardToMove);
         }
         if (movedCard != null) {
-            deck.pop();
+            dealtDeck.pop();
+            if (!(dealtDeck.size() <= 0)) {
+                dealtDeck.peek().setFaceUp();
+            }
             return true;
         } else {
             return false;
@@ -100,7 +100,9 @@ public class Board {
             return false;
         }
         mainBoard[from].pop();
-        mainBoard[from].peek().setFaceUp();
+        if (!(mainBoard[from].size() <= 0)) {
+            mainBoard[from].peek().setFaceUp();
+        }
         return true;
     }
 
@@ -130,8 +132,8 @@ public class Board {
             while (!moveStack.empty()) {
                 fromCol.push(moveStack.pop());
             }
-            printBoard();
-            System.out.println("----------------------------------------------------------------------------------");
+//            printBoard();
+//            System.out.println("----------------------------------------------------------------------------------");
             return false;
         } else {
             while (!moveStack.empty()) {
@@ -139,39 +141,33 @@ public class Board {
             }
             if (!fromCol.empty())
                 fromCol.peek().setFaceUp();
-            printBoard();
-            System.out.println("----------------------------------------------------------------------------------");
+//            printBoard();
+//            System.out.println("----------------------------------------------------------------------------------");
             return true;
         }
     }
 
-    public boolean moveToCol(int from, int to) {
-        boolean canMove = false;
-
-        Card cardToMove = mainBoard[from].peek();
-        Card cardMoved = mainBoard[to].pushValidate(cardToMove);
-        if (cardMoved != null) {
-            canMove = true;
-            mainBoard[from].pop();
-        }
-
-        if (mainBoard[from].size() != 0)
-            mainBoard[from].peek();
-
-        printBoard();
-        return canMove;
-    }
-
     public void printBoard() {
         String dealtCard;
+        String unDealtCard;
         String spades;
         String clubs;
         String heats;
         String diamonds;
         if (!dealtDeck.empty())
-            dealtCard = make3Length(dealtDeck.peek().toString());
+            if (dealtDeck.peek().toString() == null)
+                dealtCard = "-*-";
+            else
+                dealtCard = make3Length(dealtDeck.peek().toString());
         else
             dealtCard = "   ";
+        if (!deck.empty())
+            if (deck.peek().toString() == null)
+                unDealtCard = "-*-";
+            else
+                unDealtCard = make3Length(deck.peek().toString());
+        else
+            unDealtCard = "   ";
         if (!aceBoard[0].empty())
             spades = make3Length(aceBoard[0].peek().toString());
         else
@@ -190,8 +186,14 @@ public class Board {
             diamonds = "   ";
 
         System.out.println("┌---┐ ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐\n" +
-                           "|-*-| |"+dealtCard+"|       |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
+                           "|"+unDealtCard+"| |"+dealtCard+"|       |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
                            "└---┘ └---┘       └---┘ └---┘ └---┘ └---┘\n");
+
+        for (int i = 0; i < drawMainBoard.length; i++) {
+            for (int j = 0; j < drawMainBoard[i].length; j++) {
+                drawMainBoard[i][j] = null;
+            }
+        }
 
         for (int i = 0; i < mainBoard.length; i++) {
             ColOfCards col = mainBoard[i];
@@ -230,22 +232,6 @@ public class Board {
             returnLine = false;
         }
         System.out.println("");
-
-//        printMainBoard();
-
-        /*
-        |---| ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐
-        |---| |10c|       |Ac | |As | |Ah | |Ad |
-        |---| └---┘       └---┘ └---┘ └---┘ └---┘
-
-        |Kh-| |---| |---| |---| |---| |---| |---|
-              |3s-| |---| |---| |---| |---| |---|
-                    |8c-| |---| |---| |---| |---|
-                          |9d-| |---| |---| |---|
-                                |Jc-| |---| |---|
-                                      |5c-| |---|
-                                            |4d-|
-         */
     }
 
     private String make3Length(String string) {
@@ -253,21 +239,5 @@ public class Board {
             string = string + " ";
         }
         return string;
-    }
-
-    public void printMainBoard() {
-        for (ColOfCards cards : mainBoard) {
-            System.out.println(cards.toString());
-        }
-    }
-
-    public void printAceBoard() {
-        for (AceStacksOfCards cards : aceBoard) {
-            System.out.println(cards.toString());
-        }
-    }
-
-    public void printTempStack() {
-        System.out.println(moveStack.toString());
     }
 }
