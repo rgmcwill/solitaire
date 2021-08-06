@@ -33,7 +33,7 @@ public class Main {
             boolean isGood = false;
             if (splitLine[0].equals("A")) {
                 isGood = board.moveToAceStacks(Integer.valueOf(splitLine[1]));
-            } else if (splitLine[0].equals("B")) {
+            } else if (splitLine[0].equals("D")) {
                 board.deal();
             } else if (splitLine[0].equals("B")) {
                 isGood = board.moveFromDeal(Integer.valueOf(splitLine[1]));

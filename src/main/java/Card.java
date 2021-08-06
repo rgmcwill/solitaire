@@ -80,6 +80,6 @@ public class Card
         if (faceDown == false)
             return ( Rank[ cardRank ] + Suit[ cardSuit ] );
         else
-            return "Unknown";
+            return null;
     }
 }

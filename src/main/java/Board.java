@@ -10,6 +10,8 @@ public class Board {
     private Stack<Card> moveStack;
     private boolean o;
 
+    private String drawMainBoard[][];
+
     public Board(DeckOfCards deck) {
         this.mainBoard = new ColOfCards[7];
         this.aceBoard = new AceStacksOfCards[4];
@@ -19,6 +21,7 @@ public class Board {
         this.o = false;
         this.deck = null;
         this.dealtDeck = null;
+        this.drawMainBoard = new String[21][7];
 
         this.deck = this.fDeck;
         this.dealtDeck = this.bDeck;
@@ -54,21 +57,23 @@ public class Board {
 
     public Card deal() {
         Card dealt = null;
-        if (!o) {
-            dealt = fDeck.push(bDeck.pop());
-        } else {
-            dealt = bDeck.push(fDeck.pop());
-        }
-
-        if (fDeck.size() <= 0) {
+        if (bDeck.size() <= 0) {
             o = false;
-            deck = bDeck;
-            dealtDeck = fDeck;
-        } else if (bDeck.size() <= 0) {
-            o = true;
             deck = fDeck;
             dealtDeck = bDeck;
+        } else if (bDeck.size() <= 0) {
+            o = true;
+            deck = bDeck;
+            dealtDeck = fDeck;
         }
+
+        if (!o) {
+            dealt = bDeck.push(fDeck.pop());
+        } else {
+            dealt = fDeck.push(bDeck.pop());
+        }
+
+        dealt.flip();
         return dealt;
     }
 
@@ -184,15 +189,49 @@ public class Board {
         else
             diamonds = "   ";
 
-        System.out.println("┌---┐ ┌---┐             ┌---┐ ┌---┐ ┌---┐ ┌---┐\n" +
-                           "|-*-| |"+dealtCard+"|             |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
-                           "└---┘ └---┘             └---┘ └---┘ └---┘ └---┘\n");
+        System.out.println("┌---┐ ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐\n" +
+                           "|-*-| |"+dealtCard+"|       |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
+                           "└---┘ └---┘       └---┘ └---┘ └---┘ └---┘\n");
 
         for (int i = 0; i < mainBoard.length; i++) {
             ColOfCards col = mainBoard[i];
+            int size = col.size();
+            for (int j = 0; j < size; j++) {
+                moveStack.push(col.pop());
+            }
+
+            for (int j = 0; j < size; j++) {
+                String toAdd = col.push(moveStack.pop()).toString();
+
+                if (toAdd == null) {
+                    toAdd = "|---|";
+                } else {
+                    toAdd = "|"+make3Length(toAdd)+"|";
+                }
+
+                drawMainBoard[j][i] = toAdd;
+            }
         }
 
-        printMainBoard();
+        boolean returnLine = false;
+        for (int i = 0;i < drawMainBoard.length;i++) {
+            String[] subDrawMainBoard = drawMainBoard[i];
+            for (int j = 0;j < subDrawMainBoard.length;j++) {
+                String toDraw = drawMainBoard[i][j];
+                if (toDraw != null) {
+                    returnLine = true;
+                    System.out.print(toDraw+" ");
+                } else {
+                    System.out.print("      ");
+                }
+            }
+            if (returnLine)
+                System.out.println("");
+            returnLine = false;
+        }
+        System.out.println("");
+
+//        printMainBoard();
 
         /*
         |---| ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐
