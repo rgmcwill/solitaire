@@ -4,17 +4,24 @@ public class Board {
     private ColOfCards[] mainBoard;
     private AceStacksOfCards[] aceBoard;
     private Stack<Card> deck;
-    private Stack<Card> oDeck;
+    private Stack<Card> dealtDeck;
+    private Stack<Card> bDeck;
+    private Stack<Card> fDeck;
     private Stack<Card> moveStack;
     private boolean o;
 
     public Board(DeckOfCards deck) {
         this.mainBoard = new ColOfCards[7];
         this.aceBoard = new AceStacksOfCards[4];
-        this.deck = new Stack<>();
-        this.oDeck = new Stack<>();
+        this.bDeck = new Stack<>();
+        this.fDeck = new Stack<>();
         this.moveStack = new Stack<>();
         this.o = false;
+        this.deck = null;
+        this.dealtDeck = null;
+
+        this.deck = this.fDeck;
+        this.dealtDeck = this.bDeck;
 
         for (int i = 0; i < 4; i++) {
             aceBoard[i] = new AceStacksOfCards();
@@ -48,21 +55,37 @@ public class Board {
     public Card deal() {
         Card dealt = null;
         if (!o) {
-            dealt = oDeck.push(deck.pop());
+            dealt = fDeck.push(bDeck.pop());
         } else {
-            dealt = deck.push(oDeck.pop());
+            dealt = bDeck.push(fDeck.pop());
         }
 
-        if (oDeck.size() <= 0) {
+        if (fDeck.size() <= 0) {
             o = false;
-        } else if (deck.size() <= 0) {
+            deck = bDeck;
+            dealtDeck = fDeck;
+        } else if (bDeck.size() <= 0) {
             o = true;
+            deck = fDeck;
+            dealtDeck = bDeck;
         }
         return dealt;
     }
 
     public boolean moveFromDeal(int to) {
-        return false;
+        Card cardToMove = deck.peek();
+        Card movedCard = null;
+        if (to < 7) {
+            movedCard = mainBoard[to].pushValidate(cardToMove);
+        } else if (to >= 7) {
+            movedCard = aceBoard[cardToMove.getCardSuit()-1].pushValidate(cardToMove);
+        }
+        if (movedCard != null) {
+            deck.pop();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean moveToAceStacks(int from) {
@@ -72,6 +95,7 @@ public class Board {
             return false;
         }
         mainBoard[from].pop();
+        mainBoard[from].peek().setFaceUp();
         return true;
     }
 
@@ -134,9 +158,62 @@ public class Board {
     }
 
     public void printBoard() {
+        String dealtCard;
+        String spades;
+        String clubs;
+        String heats;
+        String diamonds;
+        if (!dealtDeck.empty())
+            dealtCard = make3Length(dealtDeck.peek().toString());
+        else
+            dealtCard = "   ";
+        if (!aceBoard[0].empty())
+            spades = make3Length(aceBoard[0].peek().toString());
+        else
+            spades = "   ";
+        if (!aceBoard[1].empty())
+            clubs = make3Length(aceBoard[1].peek().toString());
+        else
+            clubs = "   ";
+        if (!aceBoard[2].empty())
+            heats = make3Length(aceBoard[2].peek().toString());
+        else
+            heats = "   ";
+        if (!aceBoard[3].empty())
+            diamonds = make3Length(aceBoard[3].peek().toString());
+        else
+            diamonds = "   ";
+
+        System.out.println("┌---┐ ┌---┐             ┌---┐ ┌---┐ ┌---┐ ┌---┐\n" +
+                           "|-*-| |"+dealtCard+"|             |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
+                           "└---┘ └---┘             └---┘ └---┘ └---┘ └---┘\n");
+
+        for (int i = 0; i < mainBoard.length; i++) {
+            ColOfCards col = mainBoard[i];
+        }
+
         printMainBoard();
-        System.out.println("----------------------------------------------------");
-        printAceBoard();
+
+        /*
+        |---| ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐
+        |---| |10c|       |Ac | |As | |Ah | |Ad |
+        |---| └---┘       └---┘ └---┘ └---┘ └---┘
+
+        |Kh-| |---| |---| |---| |---| |---| |---|
+              |3s-| |---| |---| |---| |---| |---|
+                    |8c-| |---| |---| |---| |---|
+                          |9d-| |---| |---| |---|
+                                |Jc-| |---| |---|
+                                      |5c-| |---|
+                                            |4d-|
+         */
+    }
+
+    private String make3Length(String string) {
+        if (string.length() == 2) {
+            string = string + " ";
+        }
+        return string;
     }
 
     public void printMainBoard() {

@@ -16,6 +16,15 @@ public class Main {
 //            System.out.println(board.deal());
 //        }
 
+
+        /*
+        Commands
+        If 2 numbers given, separated by a space then it will try to move from that column to another.
+        If 3 numbers given, separated by a spaces then it will try to move from that column to another and move that many cards down
+        If A and then a number, separated by a space then it will try to move the card from the given column to the ace stacks
+        If B and then a number, separated by a space then it will try to move the card form the draw stack to the given column,
+            if the number is bigger then or equal to 7 it will try to move it to the ace stack
+         */
         while (true) {
             Scanner input = new Scanner(System.in);
             String line = input.nextLine();
@@ -24,6 +33,10 @@ public class Main {
             boolean isGood = false;
             if (splitLine[0].equals("A")) {
                 isGood = board.moveToAceStacks(Integer.valueOf(splitLine[1]));
+            } else if (splitLine[0].equals("B")) {
+                board.deal();
+            } else if (splitLine[0].equals("B")) {
+                isGood = board.moveFromDeal(Integer.valueOf(splitLine[1]));
             } else {
                 if (splitLine.length == 2) {
                     isGood = board.moveToColAtDepth(Integer.valueOf(splitLine[0]), Integer.valueOf(splitLine[1]), 1);
