@@ -1,9 +1,7 @@
-import java.util.Random;
-
 public class DeckOfCards {
     public static final int NCARDS = 52;
 
-    private Card[] deckOfCards;         // Contains all 52 cards
+    private final Card[] deckOfCards;         // Contains all 52 cards
     private int currentCard;            // deal THIS card in deck
 
     public DeckOfCards( )    // Constructor
@@ -31,7 +29,7 @@ public class DeckOfCards {
     /* ---------------------------------
       shuffle(n): shuffle the deck
       --------------------------------- */
-    public void shuffle(int n, int seed) {
+    public void shuffle(int n) {
         int i, j, k;
 
         for ( k = 0; k < n; k++ )
@@ -44,7 +42,7 @@ public class DeckOfCards {
    		--------------------------------- */
             Card tmp = deckOfCards[i];
             deckOfCards[i] = deckOfCards[j];
-            deckOfCards[j] = tmp;;
+            deckOfCards[j] = tmp;
         }
 
         currentCard = 0;   // Reset current card to deal
@@ -75,16 +73,16 @@ public class DeckOfCards {
     }
 
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         int k;
 
         k = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 1; j <= 13; j++)
-                s += (deckOfCards[k++] + " ");
+                s.append(deckOfCards[k++]).append(" ");
 
-            s += "\n";
+            s.append("\n");
         }
-        return (s);
+        return (s.toString());
     }
 }

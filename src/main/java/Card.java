@@ -51,10 +51,7 @@ public class Card
     }
 
     public void flip() {
-        if (faceDown)
-            faceDown = false;
-        else
-            faceDown = true;
+        faceDown = !faceDown;
     }
 
     public void setFaceDown() {
@@ -70,14 +67,11 @@ public class Card
     }
 
     public boolean equals( Card x ) {
-        if ( this.cardSuit == x.cardSuit && this.cardRank == x.cardRank )
-            return ( true );
-        else
-            return ( false );
+        return this.cardSuit == x.cardSuit && this.cardRank == x.cardRank;
     }
 
     public String toString() {
-        if (faceDown == false)
+        if (!faceDown)
             return ( Rank[ cardRank ] + Suit[ cardSuit ] );
         else
             return null;

@@ -1,30 +1,23 @@
+import java.util.Arrays;
 import java.util.Stack;
 
 public class Board {
-    private ColOfCards[] mainBoard;
-    private AceStacksOfCards[] aceBoard;
-    private Stack<Card> deck;
-    private Stack<Card> dealtDeck;
-    private Stack<Card> bDeck;
-    private Stack<Card> fDeck;
-    private Stack<Card> moveStack;
-    private boolean o;
+    private final ColOfCards[] mainBoard;
+    private final AceStacksOfCards[] aceBoard;
+    private final Stack<Card> deck;
+    private final Stack<Card> dealtDeck;
+    private final Stack<Card> moveStack;
 
-    private String drawMainBoard[][];
+    private final String[][] drawMainBoard;
 
     public Board(DeckOfCards deck) {
         this.mainBoard = new ColOfCards[7];
         this.aceBoard = new AceStacksOfCards[4];
-        this.bDeck = new Stack<>();
-        this.fDeck = new Stack<>();
         this.moveStack = new Stack<>();
-        this.o = false;
-        this.deck = null;
-        this.dealtDeck = null;
+        this.deck = new Stack<>();
+        this.dealtDeck = new Stack<>();
         this.drawMainBoard = new String[21][7];
 
-        this.deck = this.fDeck;
-        this.dealtDeck = this.bDeck;
 
         for (int i = 0; i < 4; i++) {
             aceBoard[i] = new AceStacksOfCards();
@@ -56,7 +49,6 @@ public class Board {
     }
 
     public boolean deal() {
-
         if (deck.empty()) {
             if (dealtDeck.empty()) {
                 return false;
@@ -76,10 +68,10 @@ public class Board {
 
     public boolean moveFromDeal(int to) {
         Card cardToMove = dealtDeck.peek();
-        Card movedCard = null;
+        Card movedCard;
         if (to < 7) {
             movedCard = mainBoard[to].pushValidate(cardToMove);
-        } else if (to >= 7) {
+        } else {
             movedCard = aceBoard[cardToMove.getCardSuit()-1].pushValidate(cardToMove);
         }
         if (movedCard != null) {
@@ -132,8 +124,6 @@ public class Board {
             while (!moveStack.empty()) {
                 fromCol.push(moveStack.pop());
             }
-//            printBoard();
-//            System.out.println("----------------------------------------------------------------------------------");
             return false;
         } else {
             while (!moveStack.empty()) {
@@ -141,8 +131,6 @@ public class Board {
             }
             if (!fromCol.empty())
                 fromCol.peek().setFaceUp();
-//            printBoard();
-//            System.out.println("----------------------------------------------------------------------------------");
             return true;
         }
     }
@@ -189,10 +177,8 @@ public class Board {
                            "|"+unDealtCard+"| |"+dealtCard+"|       |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
                            "└---┘ └---┘       └---┘ └---┘ └---┘ └---┘\n");
 
-        for (int i = 0; i < drawMainBoard.length; i++) {
-            for (int j = 0; j < drawMainBoard[i].length; j++) {
-                drawMainBoard[i][j] = null;
-            }
+        for (String[] strings : drawMainBoard) {
+            Arrays.fill(strings, null);
         }
 
         for (int i = 0; i < mainBoard.length; i++) {
@@ -216,22 +202,20 @@ public class Board {
         }
 
         boolean returnLine = false;
-        for (int i = 0;i < drawMainBoard.length;i++) {
-            String[] subDrawMainBoard = drawMainBoard[i];
-            for (int j = 0;j < subDrawMainBoard.length;j++) {
-                String toDraw = drawMainBoard[i][j];
+        for (String[] subDrawMainBoard : drawMainBoard) {
+            for (String toDraw : subDrawMainBoard) {
                 if (toDraw != null) {
                     returnLine = true;
-                    System.out.print(toDraw+" ");
+                    System.out.print(toDraw + " ");
                 } else {
                     System.out.print("      ");
                 }
             }
             if (returnLine)
-                System.out.println("");
+                System.out.println();
             returnLine = false;
         }
-        System.out.println("");
+        System.out.println();
     }
 
     private String make3Length(String string) {

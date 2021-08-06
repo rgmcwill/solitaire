@@ -2,19 +2,13 @@
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         DeckOfCards deck = new DeckOfCards();
 
-        deck.shuffle(520,0);
-
-//        deck.flip();
+        deck.shuffle(520);
 
         Board board = new Board(deck);
         board.printBoard();
-
-//        for (int i = 0; i < 2000; i++) {
-//            System.out.println(board.deal());
-//        }
 
 
         /*
@@ -31,26 +25,27 @@ public class Main {
             String[] splitLine = line.split(" ");
             System.out.println(splitLine[0]);
             boolean isGood = false;
-            if (splitLine[0].equals("A")) {
-                if (splitLine.length == 2) {
-                    isGood = board.moveToAceStacks(Integer.valueOf(splitLine[1]));
-                } else {
-                    isGood = false;
-                }
-            } else if (splitLine[0].equals("D")) {
-                board.deal();
-            } else if (splitLine[0].equals("B")) {
-                if (splitLine.length == 2) {
-                    isGood = board.moveFromDeal(Integer.valueOf(splitLine[1]));
-                } else {
-                    isGood = false;
-                }
-            } else {
-                if (splitLine.length == 2) {
-                    isGood = board.moveToColAtDepth(Integer.valueOf(splitLine[0]), Integer.valueOf(splitLine[1]), 1);
-                } else if (splitLine.length == 3) {
-                    isGood = board.moveToColAtDepth(Integer.valueOf(splitLine[0]), Integer.valueOf(splitLine[1]), Integer.valueOf(splitLine[2]));
-                }
+            switch (splitLine[0]) {
+                case "A":
+                    if (splitLine.length == 2) {
+                        isGood = board.moveToAceStacks(Integer.parseInt(splitLine[1]));
+                    }
+                    break;
+                case "D":
+                    isGood = board.deal();
+                    break;
+                case "B":
+                    if (splitLine.length == 2) {
+                        isGood = board.moveFromDeal(Integer.parseInt(splitLine[1]));
+                    }
+                    break;
+                default:
+                    if (splitLine.length == 2) {
+                        isGood = board.moveToColAtDepth(Integer.parseInt(splitLine[0]), Integer.parseInt(splitLine[1]), 1);
+                    } else if (splitLine.length == 3) {
+                        isGood = board.moveToColAtDepth(Integer.parseInt(splitLine[0]), Integer.parseInt(splitLine[1]), Integer.parseInt(splitLine[2]));
+                    }
+                    break;
             }
 
 
