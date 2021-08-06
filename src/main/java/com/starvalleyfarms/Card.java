@@ -1,3 +1,5 @@
+package com.starvalleyfarms;
+
 public class Card
 {
     public static final int DIAMOND   = 4;

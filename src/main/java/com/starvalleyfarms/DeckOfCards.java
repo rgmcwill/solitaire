@@ -1,3 +1,5 @@
+package com.starvalleyfarms;
+
 public class DeckOfCards {
     public static final int NCARDS = 52;
 
@@ -10,8 +12,8 @@ public class DeckOfCards {
 
         int i = 0;
 
-//        System.out.println(Card.SPADE);
-        for ( int suit = Card.DIAMOND; suit >= Card.SPADE; suit-- ) {
+//        System.out.println(com.starvalleyfarms.Card.SPADE);
+        for (int suit = Card.DIAMOND; suit >= Card.SPADE; suit-- ) {
 //            System.out.println(suit);
             for (int rank = 1; rank <= 13; rank++) {
                 Card card = new Card(suit, rank);

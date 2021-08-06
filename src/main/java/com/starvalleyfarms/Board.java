@@ -1,3 +1,5 @@
+package com.starvalleyfarms;
+
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -173,9 +175,9 @@ public class Board {
         else
             diamonds = "   ";
 
-        System.out.println("┌---┐ ┌---┐       ┌---┐ ┌---┐ ┌---┐ ┌---┐\n" +
+        System.out.println("|---| |---|       |---| |---| |---| |---|\n" +
                            "|"+unDealtCard+"| |"+dealtCard+"|       |"+spades+"| |"+clubs+"| |"+heats+"| |"+diamonds+"|\n" +
-                           "└---┘ └---┘       └---┘ └---┘ └---┘ └---┘\n");
+                           "|___| |___|       |___| |___| |___| |___|\n");
 
         for (String[] strings : drawMainBoard) {
             Arrays.fill(strings, null);
@@ -192,7 +194,7 @@ public class Board {
                 String toAdd = col.push(moveStack.pop()).toString();
 
                 if (toAdd == null) {
-                    toAdd = "|---|";
+                    toAdd = "|___|";
                 } else {
                     toAdd = "|"+make3Length(toAdd)+"|";
                 }

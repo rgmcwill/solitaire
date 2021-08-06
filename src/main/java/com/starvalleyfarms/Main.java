@@ -1,3 +1,4 @@
+package com.starvalleyfarms;
 
 import java.util.Scanner;
 
